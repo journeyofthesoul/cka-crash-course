@@ -56,8 +56,16 @@ sudo apt-mark hold kubelet kubeadm kubectl
 
 # Required for kubeadm preinstall checks
 modprobe br_netfilter
-echo '1' > /proc/sys/net/ipv4/ip_forward
-sudo apt-get -y install socat
 
 # Set alias for kubectl command
 echo "alias k=kubectl" >> /home/vagrant/.bashrc
+
+# Switch to root user for the commands below
+# Writing to ip_forward requires root privileges
+sudo -i
+
+# Install socat for port forwarding
+apt-get -y install socat
+
+# Enable IP forwarding
+echo '1' > /proc/sys/net/ipv4/ip_forward
