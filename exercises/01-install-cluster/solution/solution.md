@@ -13,7 +13,7 @@ $ vagrant ssh kube-control-plane
 Run the `kubeadm init` command as root user. This initializes the control plane node. The output contains follow up command you will keep track of.
 
 ```
-$ sudo kubeadm init --pod-network-cidr 172.18.0.0/16
+sudo kubeadm init --apiserver-advertise-address 192.168.56.10 --pod-network-cidr 172.18.0.0/16
 ...
 To start using your cluster, you need to run the following as a regular user:
 
@@ -29,6 +29,18 @@ Then you can join any number of worker nodes by running the following on each as
 
 kubeadm join 192.168.2.167:6443 --token bwpn4g.g8duvvhgw0aqneh0 \
 	--discovery-token-ca-cert-hash sha256:b8cf484cea5b05eb9415b3ec6d36f5586330d2f62f332ee9d3336a2a4dabd13b
+```
+
+Setting the --apiserver-advertise-address address to the configured IP in virtualbox is important because if you look at the route table, you'll see it will advertise 10.0.2.15 as the IP associated with the interface eth0 used for outbound traffic by default if no advertise IP is set.
+
+```
+vagrant@kube-control-plane:~$ ip route show
+default via 10.0.2.2 dev eth0 proto dhcp src 10.0.2.15 metric 100
+10.0.2.0/24 dev eth0 proto kernel scope link src 10.0.2.15 metric 100
+10.0.2.2 dev eth0 proto dhcp scope link src 10.0.2.15 metric 100
+101.192.249.101 via 10.0.2.2 dev eth0 proto dhcp src 10.0.2.15 metric 100
+192.168.56.0/24 dev eth1 proto kernel scope link src 192.168.56.10
+192.168.150.1 via 10.0.2.2 dev eth0 proto dhcp src 10.0.2.15 metric 100
 ```
 
 Should you forget about the `join` command, run the following to retrieve it.
@@ -125,4 +137,17 @@ NAME    READY   STATUS    RESTARTS   AGE
 nginx   1/1     Running   0          9s
 $ kubectl describe pod nginx | grep Node:
 Node:             kube-worker-1/192.168.2.168
+```
+
+If you want to run the nginx pod on the worker node, you need to have a proper kubeconfig on the worker node. The easiest way to set one is to copy admin.conf from the control plane.
+
+```
+sudo cat /etc/kubernetes/admin.conf
+```
+
+Then, set it at the home folder config of the vagrant user in the worker node.
+
+```
+vagrant@kube-worker-1:~$ mkdir ~/.kube
+vagrant@kube-worker-1:~$ vi ~/.kube/config
 ```
