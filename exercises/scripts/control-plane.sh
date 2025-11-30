@@ -1,9 +1,13 @@
 #!/usr/bin/env bash
 
+if [ -z ${K8S_VERSION+x} ]; then
+  K8S_VERSION=1.31.1-1.1
+fi
+
 POD_CIDR=$1
 API_ADV_ADDRESS=$2
 
-kubeadm init --pod-network-cidr $POD_CIDR --apiserver-advertise-address $API_ADV_ADDRESS | tee /vagrant/kubeadm-init.out
+kubeadm init --kubernetes-version v${K8S_VERSION:0:6} --pod-network-cidr $POD_CIDR --apiserver-advertise-address $API_ADV_ADDRESS | tee /vagrant/kubeadm-init.out
 
 systemctl daemon-reload
 echo "KUBELET_EXTRA_ARGS=--node-ip=$API_ADV_ADDRESS --cgroup-driver=systemd" > /etc/default/kubelet
