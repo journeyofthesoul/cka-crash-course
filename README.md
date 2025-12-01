@@ -1,8 +1,9 @@
 # Note - This repo is originally a fork of a project
 
-This repository used to be a fork of the following repository up until commit hash 2a5693e71cb9555b85066f1adee47f2fcf70dda1.  
+This repository was originally a fork of the following project up to commit 2a5693e71cb9555b85066f1adee47f2fcf70dda1:  
 https://github.com/bmuschko/cka-crash-course  
-It since then being repurposed for the use of virtualbox instead of vmware, as a standalone project without any intention to sync changes to the upstream source.
+  
+It has since been repurposed for use with VirtualBox instead of VMware and now functions as an independent project, with no intention to synchronize further changes with the upstream source.
 
 # Certified Kubernetes Administrator (CKA) Crash Course
 
