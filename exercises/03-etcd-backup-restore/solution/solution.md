@@ -58,7 +58,7 @@ Snapshot saved at /opt/etcd-backup.db
 
 ## Restoring Data from the Backup
 
-To restore etcd from the backup, use the `etcdutl` command. At a minimum, provide the `--data-dir` command line option. Here, we are using the data directory `/tmp/from-backup`. After running the command, you should be able to find the restored backup in the directory `/var/lib/from-backup`.
+To restore etcd from the backup, use the `etcdutl` command. At a minimum, provide the `--data-dir` command line option. Here, we are using the data directory `/var/lib/from-backup`. After running the command, you should be able to find the restored backup in the directory `/var/lib/from-backup`.
 
 ```
 $ sudo ETCDCTL_API=3 etcdutl --data-dir=/var/lib/from-backup snapshot restore /opt/etcd-backup.db
@@ -82,6 +82,12 @@ spec:
       type: DirectoryOrCreate
     name: etcd-data
 ...
+```
+
+You should also change the data-dir parameter of the container command to point to `/var/lib/from-backup`.
+```
+$ sudo cat /etc/kubernetes/manifests/etcd.yaml | grep data-dir
+    - --data-dir=/var/lib/from-backup
 ```
 
 The `etcd-kube-control-plane` Pod will be recreated and points to the restored backup directory.
