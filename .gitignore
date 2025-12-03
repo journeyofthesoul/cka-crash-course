@@ -1,6 +1,16 @@
+# MacBook system files
 .DS_Store
+
+# Vagrant files
 .vagrant
+
+# Minikube files
 kubeadm-init.out
 admin.conf
 *-console.log
 *.log
+
+# Secure files
+*.csr
+*.crt
+*.key
